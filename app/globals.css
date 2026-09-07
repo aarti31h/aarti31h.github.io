@@ -1,0 +1,338 @@
+@import "tailwindcss";
+
+/* ==================================================================
+   Theme tokens
+
+   Light is the default set. The inline bootstrap script in the layout
+   always resolves an explicit `data-theme` on <html> before first paint
+   (stored preference -> system preference -> light), so the dark values
+   only ever need to be written once, in a single override block. That
+   avoids keeping a `prefers-color-scheme` media query and an attribute
+   selector manually in sync, which is where theming usually rots.
+
+   With JavaScript unavailable no attribute is set and the page renders
+   in light, which is fully legible.
+   ================================================================== */
+@theme {
+  /* `ink` is the colour of text sitting ON the accent, not a background. */
+  --color-ink: #ffffff;
+  --color-bg: #f4f5f8;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef0f4;
+  --color-line: rgba(16, 24, 40, 0.1);
+  --color-line-strong: rgba(16, 24, 40, 0.2);
+  --color-fg: #0e1116;
+  --color-muted: #4a5262;
+  --color-faint: #6b7484;
+  --color-accent: #0f5fd0;
+  --color-accent-soft: #0a47a3;
+  --color-accent-dim: rgba(15, 95, 208, 0.12);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-face), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Non-utility tokens: decoration, diagrams, selection. */
+:root {
+  color-scheme: light;
+
+  --grid-line: rgba(16, 24, 40, 0.045);
+  --drift-1: rgba(15, 95, 208, 0.09);
+  --drift-2: rgba(15, 95, 208, 0.045);
+  --selection: rgba(15, 95, 208, 0.2);
+  --ghost-bg: rgba(16, 24, 40, 0.02);
+  --btn-glow: rgba(15, 95, 208, 0.34);
+
+  --diag-fill: rgba(16, 24, 40, 0.03);
+  --diag-stroke: rgba(16, 24, 40, 0.2);
+  --diag-accent-fill: rgba(15, 95, 208, 0.09);
+  --diag-accent-stroke: rgba(15, 95, 208, 0.5);
+  --diag-label: #6b7484;
+  --diag-label-accent: #0f5fd0;
+  --diag-frame: rgba(16, 24, 40, 0.18);
+  --portrait-glow: rgba(15, 95, 208, 0.14);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-ink: #08090c;
+  --color-bg: #0a0b0e;
+  --color-surface: #101319;
+  --color-surface-2: #151922;
+  --color-line: rgba(255, 255, 255, 0.07);
+  --color-line-strong: rgba(255, 255, 255, 0.14);
+  --color-fg: #eceef2;
+  --color-muted: #949bab;
+  --color-faint: #656d7e;
+  --color-accent: #4d9fff;
+  --color-accent-soft: #8fc2ff;
+  --color-accent-dim: rgba(77, 159, 255, 0.14);
+
+  --grid-line: rgba(255, 255, 255, 0.032);
+  --drift-1: rgba(77, 159, 255, 0.11);
+  --drift-2: rgba(77, 159, 255, 0.05);
+  --selection: rgba(77, 159, 255, 0.28);
+  --ghost-bg: rgba(255, 255, 255, 0.02);
+  --btn-glow: rgba(77, 159, 255, 0.55);
+
+  --diag-fill: rgba(255, 255, 255, 0.035);
+  --diag-stroke: rgba(255, 255, 255, 0.14);
+  --diag-accent-fill: rgba(77, 159, 255, 0.1);
+  --diag-accent-stroke: rgba(77, 159, 255, 0.45);
+  --diag-label: #949bab;
+  --diag-label-accent: #8fc2ff;
+  --diag-frame: rgba(255, 255, 255, 0.16);
+  --portrait-glow: rgba(77, 159, 255, 0.16);
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Sticky header clearance for in-page anchors. */
+  scroll-padding-top: 5.5rem;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  font-synthesis-weight: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--selection);
+}
+
+/* Visible, consistent keyboard focus everywhere. */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Only show focus rings for keyboard users, never on mouse click. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Applied by the theme toggle for the duration of a switch only, so the
+   change eases instead of snapping — without animating the initial paint
+   or every hover transition on the page. */
+.theme-switching,
+.theme-switching *,
+.theme-switching *::before,
+.theme-switching *::after {
+  transition:
+    background-color 280ms ease,
+    border-color 280ms ease,
+    color 280ms ease,
+    fill 280ms ease,
+    stroke 280ms ease !important;
+}
+
+/* ------------------------------------------------------------------
+   Typography helpers
+   ------------------------------------------------------------------ */
+.display {
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.section-title {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.875rem, 1.2rem + 2.6vw, 3.25rem);
+}
+
+.prose-body {
+  color: var(--color-muted);
+  line-height: 1.7;
+  font-size: 1.0625rem;
+}
+
+/* ------------------------------------------------------------------
+   Background texture: fine engineering grid + slow accent drift.
+   Purely decorative, sits behind everything, never intercepts input.
+   ------------------------------------------------------------------ */
+.bg-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+.bg-drift {
+  background:
+    radial-gradient(60rem 40rem at 78% -8%, var(--drift-1), transparent 62%),
+    radial-gradient(46rem 34rem at 6% 42%, var(--drift-2), transparent 60%);
+  animation: drift 26s ease-in-out infinite alternate;
+}
+
+@keyframes drift {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to   { transform: translate3d(-2.5%, 2%, 0) scale(1.07); }
+}
+
+.portrait-glow {
+  background: var(--portrait-glow);
+}
+
+/* ------------------------------------------------------------------
+   Scroll reveal
+
+   Progressive enhancement, deliberately.
+
+   Content is VISIBLE by default. It is only displaced and hidden once the
+   inline bootstrap script has set data-js="on", which happens before first
+   paint. If the bundle fails, hydration errors, the browser is old, or a
+   crawler renders without running effects, the page still shows everything
+   — it simply does not animate. The alternative (hiding by default and
+   revealing with JavaScript) means a single script failure renders a
+   completely blank portfolio, which is not a risk worth taking.
+
+   The same script removes data-js again if React has not signalled that it
+   hydrated within a few seconds, so a broken bundle degrades to static
+   content rather than an empty page.
+   ------------------------------------------------------------------ */
+[data-js="on"] .reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.7s var(--ease-out-expo),
+    transform 0.7s var(--ease-out-expo);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+[data-js="on"] .reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+  will-change: auto;
+}
+
+/* ------------------------------------------------------------------
+   Architecture diagrams
+   ------------------------------------------------------------------ */
+.diag-node {
+  fill: var(--diag-fill);
+  stroke: var(--diag-stroke);
+}
+
+.diag-node-accent {
+  fill: var(--diag-accent-fill);
+  stroke: var(--diag-accent-stroke);
+}
+
+.diag-label {
+  fill: var(--diag-label);
+}
+
+.diag-label-accent {
+  fill: var(--diag-label-accent);
+}
+
+.diag-frame {
+  stroke: var(--diag-frame);
+}
+
+.diag-edge {
+  stroke: var(--color-accent);
+}
+
+.diag-edge-stop {
+  stop-color: var(--color-accent);
+}
+
+.diag-glow {
+  fill: var(--color-accent);
+}
+
+.flow-line {
+  stroke-dasharray: 4 10;
+  animation: flow 1.6s linear infinite;
+}
+
+@keyframes flow {
+  to { stroke-dashoffset: -14; }
+}
+
+.node-pulse {
+  animation: nodePulse 3.4s ease-in-out infinite;
+}
+
+@keyframes nodePulse {
+  0%, 100% { opacity: 0.35; r: 3; }
+  50%      { opacity: 0.9;  r: 4.5; }
+}
+
+/* Marquee-free, GPU-cheap shimmer used on the flagship project rule. */
+.rule-sweep {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-accent) 42%,
+    var(--color-accent-soft) 50%,
+    var(--color-accent) 58%,
+    transparent
+  );
+  background-size: 220% 100%;
+  animation: sweep 5s ease-in-out infinite;
+}
+
+@keyframes sweep {
+  0%, 100% { background-position: 120% 0; }
+  50%      { background-position: -20% 0; }
+}
+
+/* Panel copy cross-fade in the architecture explorer. */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ------------------------------------------------------------------
+   Reduced motion: honour the OS setting.
+   Reveals resolve to their final state instead of animating in, so no
+   content is ever left invisible.
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+  [data-js="on"] .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .bg-drift { animation: none; }
+}
