@@ -12,7 +12,7 @@ export const site = {
   title: "Full Stack Software Engineer",
   tagline:
     "Building scalable web applications, distributed systems and cloud-native solutions.",
-  stack: [".NET", "Angular", "Microservices", "Cloud"],
+  stack: [".NET Core", "Angular", "Microservices", "Cloud"],
   location: "Jabalpur, Madhya Pradesh, India",
   email: "aarti31h@gmail.com",
   github: "https://github.com/aarti31h",

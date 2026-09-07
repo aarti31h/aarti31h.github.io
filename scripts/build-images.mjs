@@ -18,7 +18,7 @@ const publicDir = resolve(here, "../public");
 const SOURCE = process.env.PHOTO_SOURCE ?? "C:/Users/DipanjanDas/Downloads/Aarti Photo.png";
 
 const NAME = "Aarti Hariharno";
-const STACK = ".NET  ·  Angular  ·  Microservices  ·  Cloud";
+const STACK = ".NET Core  ·  Angular  ·  Microservices  ·  Cloud";
 const BG = "#0a0b0e";
 const ACCENT = "#4d9fff";
 const FG = "#eceef2";
