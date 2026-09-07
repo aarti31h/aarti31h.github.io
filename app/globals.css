@@ -336,3 +336,60 @@ body {
 
   .bg-drift { animation: none; }
 }
+
+/* ------------------------------------------------------------------
+   Print / PDF
+   The engineering notes are exported to PDF for sharing, so printing has
+   to produce a readable document rather than a screenshot of a dark UI.
+   ------------------------------------------------------------------ */
+@media print {
+  :root,
+  :root[data-theme="dark"] {
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-fg: #101317;
+    --color-muted: #2f3641;
+    --color-faint: #5b6472;
+    --color-line: rgba(0, 0, 0, 0.16);
+    --color-line-strong: rgba(0, 0, 0, 0.3);
+    --color-accent: #0a44a0;
+    --grid-line: transparent;
+    --drift-1: transparent;
+    --drift-2: transparent;
+  }
+
+  header[class*="fixed"],
+  footer,
+  .bg-grid,
+  .bg-drift {
+    display: none !important;
+  }
+
+  body {
+    background: #fff !important;
+  }
+
+  article {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+
+  h2, h3 {
+    break-after: avoid;
+  }
+
+  p, li, pre, blockquote, figure {
+    break-inside: avoid;
+  }
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.75em;
+    color: #5b6472;
+  }
+}

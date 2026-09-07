@@ -1,5 +1,7 @@
+import Link from "next/link";
 import Reveal from "./Reveal";
 import Section from "./Section";
+import { articles } from "@/lib/articles";
 import { knowledgeSharing } from "@/lib/content";
 
 export default function KnowledgeSharing() {
@@ -30,8 +32,36 @@ export default function KnowledgeSharing() {
         </ul>
 
         <Reveal delay={120}>
-          <div className="rounded-xl border border-dashed border-line-strong p-7">
-            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
+          <div className="rounded-xl border border-line bg-surface/40 p-7">
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-accent">
+              Latest note
+            </h3>
+            {articles.slice(0, 1).map((article) => (
+              <article key={article.slug} className="group mt-5">
+                <h4 className="text-balance text-lg font-medium tracking-tight">
+                  <Link
+                    href={`/notes/${article.slug}`}
+                    className="transition-colors duration-300 group-hover:text-accent"
+                  >
+                    {article.title}
+                  </Link>
+                </h4>
+                <p className="mt-3 text-pretty text-[14px] leading-relaxed text-muted">
+                  {article.deck}
+                </p>
+                <p className="mt-4 inline-flex items-center gap-2 font-mono text-[12px] text-accent">
+                  Read it
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
+                </p>
+              </article>
+            ))}
+
+            <h3 className="mt-8 border-t border-line pt-7 font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
               Subjects I go deep on
             </h3>
             <ul className="mt-5 flex flex-wrap gap-2">
@@ -44,11 +74,7 @@ export default function KnowledgeSharing() {
                 </li>
               ))}
             </ul>
-            <p className="mt-6 text-[13.5px] leading-relaxed text-faint">
-              Long-form writing on these is something I am starting rather than
-              something I can point at yet. I would rather say that plainly than
-              pad this page.
-            </p>
+
           </div>
         </Reveal>
       </div>
